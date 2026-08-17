@@ -22,24 +22,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.test.myapplication.data.repository.BibleRepository
+import com.test.myapplication.data.local.MvmSettings
 import com.test.myapplication.ui.theme.*
 import com.test.myapplication.util.*
+import kotlinx.datetime.Clock
 
 @Composable
 fun VerseOfTheDaySection() {
-    var verseText by remember { mutableStateOf("Laai tans...") }
-    var verseRef by remember { mutableStateOf("") }
+    var verseText by remember { mutableStateOf(MvmSettings.getDailyVerseText() ?: "Laai tans...") }
+    var verseRef by remember { mutableStateOf(MvmSettings.getDailyVerseRef() ?: "") }
 
     LaunchedEffect(Unit) {
-        if (verseText == "Laai tans...") {
-            val v = BibleRepository.getVerseOfTheDay(false)
-            if (v != null) {
-                verseText = v.text
-                verseRef = v.reference
-            } else {
-                verseText = "\"Want Ek weet watter gedagtes Ek aangaande julle koester.\""
-                verseRef = "Jeremia 29:11"
-            }
+        val v = BibleRepository.getVerseOfTheDay(false)
+        if (v != null) {
+            verseText = v.text
+            verseRef = v.reference
+            MvmSettings.saveDailyVerse(v.text, v.reference, Clock.System.now().toEpochMilliseconds())
+        } else if (verseText == "Laai tans...") {
+            verseText = "\"Want Ek weet watter gedagtes Ek aangaande julle koester.\""
+            verseRef = "Jeremia 29:11"
         }
     }
 

@@ -15,6 +15,19 @@ abstract class BibleDatabase : RoomDatabase() {
 // The Room compiler generates the implementation of this class
 expect object BibleDatabaseConstructor : RoomDatabaseConstructor<BibleDatabase>
 
+object BibleDatabaseProvider {
+    private var INSTANCE: BibleDatabase? = null
+
+    fun getDatabase(builder: RoomDatabase.Builder<BibleDatabase>): BibleDatabase {
+        val instance = INSTANCE
+        if (instance != null) return instance
+        
+        val newInstance = getRoomDatabase(builder)
+        INSTANCE = newInstance
+        return newInstance
+    }
+}
+
 fun getRoomDatabase(
     builder: RoomDatabase.Builder<BibleDatabase>
 ): BibleDatabase {

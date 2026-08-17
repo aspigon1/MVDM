@@ -3,18 +3,20 @@ package com.test.myapplication
 import android.content.Context
 import androidx.work.*
 import com.test.myapplication.data.repository.BibleRepository
+import com.test.myapplication.data.local.MvmSettings
+import com.test.myapplication.data.local.BibleDatabaseProvider
+import com.test.myapplication.data.local.getDatabaseBuilder
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class VerseWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        BibleRepository.init(BibleDatabaseProvider.getDatabase(applicationContext))
+        BibleRepository.init(BibleDatabaseProvider.getDatabase(getDatabaseBuilder(applicationContext)))
         val todayVerse = BibleRepository.getVerseOfTheDay(false)
         
         if (todayVerse != null) {
-            MvmPreferences.saveDailyVerse(
-                applicationContext,
+            MvmSettings.saveDailyVerse(
                 todayVerse.text,
                 todayVerse.reference,
                 System.currentTimeMillis()

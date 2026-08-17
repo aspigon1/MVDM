@@ -11,6 +11,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.IO
+import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import mvdm.shared.generated.resources.Res
 
 object BibleRepository {
     private const val BASE_URL = "https://api.scripture.api.bible/v1/"
@@ -20,10 +23,65 @@ object BibleRepository {
     const val ENGLISH_BIBLE_ID = "de4e12af7f28f599-01"
 
     private var database: BibleDatabase? = null
+    
+    private val json = Json { ignoreUnknownKeys = true }
 
     fun init(db: BibleDatabase) {
         database = db
     }
+
+    suspend fun ensureSeeded() = withContext(Dispatchers.IO) {
+        val db = database ?: return@withContext
+        
+        if (!db.bibleDao().hasBook("REV", AFRIKAANS_BIBLE_ID)) {
+            seedVersion(db, "files/bible_afr_full.json", AFRIKAANS_BIBLE_ID)
+        }
+
+        if (db.bibleDao().getVerseCountForBible(ENGLISH_BIBLE_ID) == 0) {
+            seedVersion(db, "files/bible_eng_full.json", ENGLISH_BIBLE_ID)
+        }
+    }
+
+    @OptIn(ExperimentalResourceApi::class)
+    private suspend fun seedVersion(db: BibleDatabase, filePath: String, bibleId: String) {
+        try {
+            val jsonString = Res.readBytes(filePath).decodeToString()
+            val data = json.decodeFromString<GetBibleResponse>(jsonString)
+
+            data.books.forEach { bookData ->
+                val bookId = getBookIdFromNumber(bookData.nr)
+                db.bibleDao().insertBooks(listOf(BibleBookEntity(bookId, bibleId, bookData.name, bookData.name, bookId)))
+                
+                bookData.chapters.forEach { chapterData ->
+                    val chapterId = "${bookId}.${chapterData.chapter}"
+                    db.bibleDao().insertChapters(listOf(BibleChapterEntity(chapterId, bibleId, chapterData.chapter.toString(), bookId)))
+                    
+                    db.bibleDao().insertVerses(chapterData.verses.map { verseData ->
+                        BibleVerseEntity(
+                            "${chapterId}.${verseData.verse}",
+                            bibleId,
+                            bookId,
+                            chapterId,
+                            verseData.verse,
+                            verseData.text,
+                            verseData.name
+                        )
+                    })
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Serializable
+    private data class GetBibleResponse(val books: List<GetBibleBook>)
+    @Serializable
+    private data class GetBibleBook(val nr: Int, val name: String, val chapters: List<GetBibleChapter>)
+    @Serializable
+    private data class GetBibleChapter(val chapter: Int, val verses: List<GetBibleVerse>)
+    @Serializable
+    private data class GetBibleVerse(val verse: Int, val name: String, val text: String)
 
     private val client = HttpClient {
         install(ContentNegotiation) {
