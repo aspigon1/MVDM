@@ -6,7 +6,7 @@ struct iosApp: App {
     init() {
         // Initialize Database and Repositories on iOS
         let db = BibleDatabaseKt.getDatabaseBuilder().build()
-        BibleRepository.shared.init(db: db)
+        BibleRepository.shared.initializeDatabase(db: db)
     }
 
     var body: some Scene {

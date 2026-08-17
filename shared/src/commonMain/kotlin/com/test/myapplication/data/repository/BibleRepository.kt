@@ -26,7 +26,7 @@ object BibleRepository {
     
     private val json = Json { ignoreUnknownKeys = true }
 
-    fun init(db: BibleDatabase) {
+    fun initializeDatabase(db: BibleDatabase) {
         database = db
     }
 

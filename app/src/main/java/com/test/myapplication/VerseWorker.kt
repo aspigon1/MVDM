@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class VerseWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        BibleRepository.init(BibleDatabaseProvider.getDatabase(getDatabaseBuilder(applicationContext)))
+        BibleRepository.initializeDatabase(BibleDatabaseProvider.getDatabase(getDatabaseBuilder(applicationContext)))
         val todayVerse = BibleRepository.getVerseOfTheDay(false)
         
         if (todayVerse != null) {

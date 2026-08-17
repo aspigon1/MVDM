@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         com.test.myapplication.data.local.initSettings(this)
         
         val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder(this))
-        BibleRepository.init(db)
+        BibleRepository.initializeDatabase(db)
         lifecycleScope.launch {
             BibleRepository.ensureSeeded()
         }
