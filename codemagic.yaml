@@ -1,0 +1,31 @@
+workflows:
+  ios-workflow:
+    name: iOS Workflow
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    environment:
+      groups:
+        - firebase_credentials
+      vars:
+        XCODE_PROJECT: "iosApp/iosApp.xcodeproj"
+        XCODE_SCHEME: "iosApp"
+      node: latest
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install XcodeGen
+        script: brew install xcodegen
+      - name: Generate Xcode Project
+        script: |
+          cd iosApp
+          xcodegen generate
+      - name: Install Pods
+        script: |
+          cd iosApp
+          pod install
+      - name: Build iOS App
+        script: |
+          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug
+    artifacts:
+      - iosApp/*.app
+      - iosApp/*.ipa
