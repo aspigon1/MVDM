@@ -14,7 +14,7 @@ workflows:
         script: chmod +x gradlew
       - name: Build Shared Framework (Release)
         script: |
-          ./gradlew clean :shared:linkSharedReleaseFrameworkIosArm64 --no-configuration-cache
+          ./gradlew clean :shared:assembleSharedReleaseFrameworkIosArm64 --no-configuration-cache || (./gradlew tasks --all && exit 1)
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
