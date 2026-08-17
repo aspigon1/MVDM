@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="27"
+        android:translateY="27">
+        <path
+            android:fillColor="#00000000"
+            android:pathData="M0,0h54v54h-54z" />
+        <!-- We use a bitmap reference in a layer-list for the actual adaptive icon,
+             but for the foreground vector we can wrap the drawable if needed or
+             use a layer-list in ic_launcher.xml. However, the most compatible
+             way is to use a layer-list in the mipmap definition.
+             Let's check mipmap-anydpi-v26/ic_launcher.xml again. -->
+    </group>
+</vector>

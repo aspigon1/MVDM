@@ -1,0 +1,31 @@
+package com.test.myapplication.domain.navigation
+
+enum class Screen { 
+    Welcome, 
+    Register, 
+    VerifyEmail, 
+    ProfileSetup, 
+    Home, 
+    Rooster, 
+    Prayer, 
+    Contact, 
+    Besighede, 
+    Bybel, 
+    BybelChapterSelection, 
+    BybelReader, 
+    BybelSearch, 
+    Login, 
+    AdminDashboard, 
+    ManageBusinesses, 
+    ManageEvents, 
+    ManagePrayers, 
+    Gallery, 
+    ManageGallery, 
+    Mission, 
+    BelySaamMet, 
+    ManageAudio, 
+    Sermons, 
+    ManageSermons, 
+    Pilare, 
+    ManageUsers 
+}
