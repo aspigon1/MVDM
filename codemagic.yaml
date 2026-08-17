@@ -30,9 +30,9 @@ workflows:
             -scheme iosApp \
             -sdk iphonesimulator \
             -configuration Debug \
-            -arch x86_64 \
+            -arch arm64 \
             CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
-            ONLY_ACTIVE_ARCH=NO
+            ONLY_ACTIVE_ARCH=YES
       - name: Package for Appetize
         script: |
           # Verify the app exists and contains Info.plist
