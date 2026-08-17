@@ -23,7 +23,7 @@ workflows:
           xcodegen generate
       - name: Build iOS App
         script: |
-          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -arch arm64 ONLY_ACTIVE_ARCH=NO
+          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -arch arm64 ONLY_ACTIVE_ARCH=NO | xcpretty
     artifacts:
       - iosApp/*.app
       - iosApp/*.ipa
