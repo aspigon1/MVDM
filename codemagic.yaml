@@ -25,6 +25,9 @@ workflows:
         script: |
           set -o pipefail
           mkdir -p iosApp/build
+          # Resolve Swift Packages first
+          xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
+          # Build the app
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
