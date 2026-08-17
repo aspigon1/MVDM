@@ -30,8 +30,18 @@ jobs:
     - name: Build KMP iOS Framework (Simulator)
       run: ./gradlew :shared:assembleSharedDebugFrameworkIosSimulatorArm64
 
+    - name: Verify Build
+      run: |
+        if [ -d "shared/build/bin/iosSimulatorArm64/debugFramework/Shared.framework" ]; then
+          echo "Shared Framework built successfully"
+        else
+          echo "Shared Framework build failed"
+          exit 1
+        fi
+
     - name: Upload KMP Framework Artifact
       uses: actions/upload-artifact@v4
       with:
         name: shared-framework-debug
         path: shared/build/bin/iosSimulatorArm64/debugFramework/
+
