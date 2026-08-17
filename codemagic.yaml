@@ -42,7 +42,8 @@ workflows:
           if [ -f "iosApp/build/iosApp.app/Info.plist" ]; then
             echo "Info.plist found. Packaging..."
             cd iosApp/build
-            zip -r ../appetize_app.zip iosApp.app
+            # Create a clean zip with only the .app folder
+            zip -y -r ../appetize_app.zip iosApp.app
           else
             echo "ERROR: iosApp.app/Info.plist not found in $PWD/iosApp/build"
             ls -R iosApp/build

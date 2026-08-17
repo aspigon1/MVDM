@@ -10,10 +10,13 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "15.0"
-    sources: [iosApp]
+    sources: 
+      - path: iosApp
+      - path: iosApp/GoogleService-Info.plist
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.aspigon1.mvdm.iosApp
       INFOPLIST_FILE: iosApp/Info.plist
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       FRAMEWORK_SEARCH_PATHS: $(inherited) $(PROJECT_DIR)/../shared/build/bin/iosSimulatorArm64/debugFramework
       # Fix for Xcode 15+ linking issues
       OTHER_LDFLAGS: $(inherited) -ObjC

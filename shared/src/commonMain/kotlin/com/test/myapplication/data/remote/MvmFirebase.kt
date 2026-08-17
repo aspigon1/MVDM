@@ -36,13 +36,13 @@ object MvmFirebase {
 
     private fun currentTimeMillis() = Clock.System.now().toEpochMilliseconds()
 
-    fun isLoggedIn() = auth.currentUser != null
-    fun isEmailVerified() = auth.currentUser?.isEmailVerified == true
-    fun getUid() = auth.currentUser?.uid ?: ""
-    fun getUserEmail() = auth.currentUser?.email ?: ""
+    fun isLoggedIn() = try { auth.currentUser != null } catch (e: Exception) { false }
+    fun isEmailVerified() = try { auth.currentUser?.isEmailVerified == true } catch (e: Exception) { false }
+    fun getUid() = try { auth.currentUser?.uid ?: "" } catch (e: Exception) { "" }
+    fun getUserEmail() = try { auth.currentUser?.email ?: "" } catch (e: Exception) { "" }
     
     fun isAdmin(): Boolean {
-        val email = auth.currentUser?.email
+        val email = try { auth.currentUser?.email } catch (e: Exception) { null }
         return email?.let { e ->
             val lower = e.lowercase()
             lower.endsWith("@moot.co.za") || 

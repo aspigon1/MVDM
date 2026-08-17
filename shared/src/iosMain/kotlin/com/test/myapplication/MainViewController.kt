@@ -10,9 +10,13 @@ import platform.UIKit.UIViewController
 
 fun MainViewController(): UIViewController = ComposeUIViewController {
     LaunchedEffect(Unit) {
-        val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder())
-        BibleRepository.initializeDatabase(db)
-        BibleRepository.ensureSeeded()
+        try {
+            val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder())
+            BibleRepository.initializeDatabase(db)
+            BibleRepository.ensureSeeded()
+        } catch (e: Exception) {
+            println("Error initializing database: ${e.message}")
+        }
     }
     App()
 }
