@@ -23,18 +23,18 @@ workflows:
           xcodegen generate
       - name: Build iOS App (Simulator for Appetize)
         script: |
-          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -arch arm64 | xcpretty
+          mkdir -p iosApp/build
+          xcodebuild build \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -arch arm64 \
+            CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
+            ONLY_ACTIVE_ARCH=NO | xcpretty
       - name: Package for Appetize
         script: |
-          cd iosApp
-          # Find the built .app and zip it
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "iosApp.app" -type d | head -n 1)
-          if [ -z "$APP_PATH" ]; then
-            # Fallback to local search if derived data is redirected
-            APP_PATH=$(find . -name "iosApp.app" -type d | head -n 1)
-          fi
-          cp -r "$APP_PATH" .
-          zip -r appetize_app.zip iosApp.app
+          cd iosApp/build
+          zip -r ../appetize_app.zip iosApp.app
     artifacts:
       - iosApp/appetize_app.zip
-      - shared/build/bin/iosSimulatorArm64/debugFramework/Shared.framework
