@@ -9,7 +9,7 @@ targets:
     sources: [iosApp]
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.aspigon1.mvdm.iosApp
-      FRAMEWORK_SEARCH_PATHS: $(inherited) $(PROJECT_DIR)/../shared/build/bin/iosArm64/releaseFramework
+      FRAMEWORK_SEARCH_PATHS: $(inherited) $(PROJECT_DIR)/../shared/build/bin/iosSimulatorArm64/debugFramework
     dependencies:
-      - framework: ../shared/build/bin/iosArm64/releaseFramework/Shared.framework
+      - framework: ../shared/build/bin/iosSimulatorArm64/debugFramework/Shared.framework
         embed: true

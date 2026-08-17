@@ -14,7 +14,7 @@ workflows:
         script: chmod +x gradlew
       - name: Build Shared Framework (Simulator for Appetize)
         script: |
-          ./gradlew :shared:linkDebugFrameworkIosSimulatorArm64 --no-configuration-cache
+          ./gradlew :shared:iosSimulatorArm64Binaries --no-configuration-cache
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
