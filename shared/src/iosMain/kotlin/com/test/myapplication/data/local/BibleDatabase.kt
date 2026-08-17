@@ -8,6 +8,6 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<BibleDatabase> {
     val dbFile = NSHomeDirectory() + "/bible_database.db"
     return Room.databaseBuilder<BibleDatabase>(
         name = dbFile,
-        factory =  { BibleDatabase_Impl() }
+        factory =  { BibleDatabaseConstructor.initialize() }
     )
 }

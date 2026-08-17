@@ -13,7 +13,8 @@ workflows:
       - name: Set up Gradle
         script: chmod +x gradlew
       - name: Build Shared Framework (Simulator)
-        script: ./gradlew :shared:linkDebugFrameworkIosSimulatorArm64 --stacktrace
+        script: |
+          ./gradlew clean :shared:assembleSharedDebugFrameworkIosSimulatorArm64 --stacktrace
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
