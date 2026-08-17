@@ -12,19 +12,19 @@ workflows:
     scripts:
       - name: Set up Gradle
         script: chmod +x gradlew
-      - name: Build Shared Framework (Simulator)
+      - name: Build Shared Framework (Release)
         script: |
-          ./gradlew clean :shared:assembleSharedDebugFrameworkIosSimulatorArm64 --stacktrace --no-configuration-cache 2>&1 | tee build.log
+          ./gradlew :shared:assembleSharedReleaseFrameworkIosArm64 --no-configuration-cache
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
         script: |
           cd iosApp
           xcodegen generate
-      - name: Build iOS App
+      - name: Build iOS App (IPA)
         script: |
-          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -arch arm64 ONLY_ACTIVE_ARCH=NO | xcpretty
+          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphoneos -configuration Release -arch arm64 | xcpretty
     artifacts:
+      - build/ios/ipa/*.ipa
       - iosApp/*.app
-      - iosApp/*.ipa
-      - shared/build/bin/iosSimulatorArm64/debugFramework/Shared.framework
+      - shared/build/bin/iosArm64/releaseFramework/Shared.framework
