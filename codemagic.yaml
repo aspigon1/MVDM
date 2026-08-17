@@ -12,9 +12,9 @@ workflows:
     scripts:
       - name: Set up Gradle
         script: chmod +x gradlew
-      - name: Build Shared Framework (Simulator for Appetize)
+      - name: Build Shared Framework (Simulator)
         script: |
-          ./gradlew :shared:iosSimulatorArm64Binaries --no-configuration-cache
+          ./gradlew :shared:iosSimulatorArm64Binaries :shared:iosX64Binaries --no-configuration-cache
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
@@ -23,18 +23,27 @@ workflows:
           xcodegen generate
       - name: Build iOS App (Simulator for Appetize)
         script: |
+          set -o pipefail
           mkdir -p iosApp/build
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -sdk iphonesimulator \
             -configuration Debug \
-            -arch arm64 \
+            -arch x86_64 \
             CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
-            ONLY_ACTIVE_ARCH=NO | xcpretty
+            ONLY_ACTIVE_ARCH=NO
       - name: Package for Appetize
         script: |
-          cd iosApp/build
-          zip -r ../appetize_app.zip iosApp.app
+          # Verify the app exists and contains Info.plist
+          if [ -f "iosApp/build/iosApp.app/Info.plist" ]; then
+            echo "Info.plist found. Packaging..."
+            cd iosApp/build
+            zip -r ../appetize_app.zip iosApp.app
+          else
+            echo "ERROR: iosApp.app/Info.plist not found in $PWD/iosApp/build"
+            ls -R iosApp/build
+            exit 1
+          fi
     artifacts:
       - iosApp/appetize_app.zip
