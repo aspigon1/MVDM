@@ -12,19 +12,29 @@ workflows:
     scripts:
       - name: Set up Gradle
         script: chmod +x gradlew
-      - name: Build Shared Framework (Release)
+      - name: Build Shared Framework (Simulator for Appetize)
         script: |
-          ./gradlew :shared:iosArm64Binaries --no-configuration-cache
+          ./gradlew :shared:linkDebugFrameworkIosSimulatorArm64 --no-configuration-cache
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
         script: |
           cd iosApp
           xcodegen generate
-      - name: Build iOS App (IPA)
+      - name: Build iOS App (Simulator for Appetize)
         script: |
-          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphoneos -configuration Release -arch arm64 | xcpretty
+          xcodebuild build -project iosApp/iosApp.xcodeproj -scheme iosApp -sdk iphonesimulator -configuration Debug -arch arm64 | xcpretty
+      - name: Package for Appetize
+        script: |
+          cd iosApp
+          # Find the built .app and zip it
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "iosApp.app" -type d | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            # Fallback to local search if derived data is redirected
+            APP_PATH=$(find . -name "iosApp.app" -type d | head -n 1)
+          fi
+          cp -r "$APP_PATH" .
+          zip -r appetize_app.zip iosApp.app
     artifacts:
-      - build/ios/ipa/*.ipa
-      - iosApp/*.app
-      - shared/build/bin/iosArm64/releaseFramework/Shared.framework
+      - iosApp/appetize_app.zip
+      - shared/build/bin/iosSimulatorArm64/debugFramework/Shared.framework
