@@ -37,17 +37,19 @@ fun MvmApp() {
     var isAdmin by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        // Wait 2 seconds before even looking at Firebase to prevent launch race conditions
-        kotlinx.coroutines.delay(2000)
+        // Wait 1 second before looking at Firebase
+        kotlinx.coroutines.delay(1000)
         try {
-            isLoggedIn = MvmFirebase.isLoggedIn()
-            if (isLoggedIn) {
+            // Only try if MvmFirebase is ready
+            val loggedIn = MvmFirebase.isLoggedIn()
+            isLoggedIn = loggedIn
+            if (loggedIn) {
                 userProfile = MvmFirebase.getUserProfile()
                 isEmailVerified = MvmFirebase.isEmailVerified()
                 isAdmin = MvmFirebase.isAdmin()
             }
         } catch (e: Exception) {
-            println("Firebase Deferred Init Error: ${e.message}")
+            // Ignore errors, stay on login/welcome screen
         }
         isAuthReady = true
     }
