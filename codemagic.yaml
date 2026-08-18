@@ -27,16 +27,15 @@ workflows:
           set -o pipefail
           mkdir -p iosApp/build
           xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
-          # Explicitly lock to arm64 to match our framework
+          # Build for ARM64 only
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -sdk iphonesimulator \
             -configuration Debug \
             -arch arm64 \
-            ARCHS=arm64 \
-            ONLY_ACTIVE_ARCH=YES \
-            CONFIGURATION_BUILD_DIR=$PWD/iosApp/build
+            CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
+            ONLY_ACTIVE_ARCH=YES
       - name: Package for Appetize
         script: |
           if [ -d "iosApp/build/iosApp.app" ]; then

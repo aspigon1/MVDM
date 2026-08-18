@@ -17,31 +17,33 @@ import com.test.myapplication.ui.theme.MyApplicationTheme
 import com.test.myapplication.ui.theme.MvmBackground
 import platform.UIKit.UIViewController
 
-// Renamed to avoid conflicts with Swift keywords
-fun createComposeViewController(): UIViewController = ComposeUIViewController {
-    var isReady by remember { mutableStateOf(false) }
-    
-    LaunchedEffect(Unit) {
-        try {
-            val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder())
-            BibleRepository.initializeDatabase(db)
-            BibleRepository.ensureSeeded()
-        } catch (e: Exception) {
-            println("Init Error: ${e.message}")
-        } finally {
-            isReady = true
+// A dedicated class makes the Swift/Kotlin bridge 100% reliable
+class IOSLauncher {
+    fun create(): UIViewController = ComposeUIViewController {
+        var isReady by remember { mutableStateOf(false) }
+        
+        LaunchedEffect(Unit) {
+            try {
+                val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder())
+                BibleRepository.initializeDatabase(db)
+                BibleRepository.ensureSeeded()
+            } catch (e: Exception) {
+                println("Startup Error: ${e.message}")
+            } finally {
+                isReady = true
+            }
         }
-    }
-    
-    MyApplicationTheme {
-        Box(
-            modifier = Modifier.fillMaxSize().background(MvmBackground),
-            contentAlignment = Alignment.Center
-        ) {
-            if (isReady) {
-                App()
-            } else {
-                CircularProgressIndicator(color = Color.White)
+        
+        MyApplicationTheme {
+            Box(
+                modifier = Modifier.fillMaxSize().background(MvmBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isReady) {
+                    App()
+                } else {
+                    CircularProgressIndicator(color = Color.White)
+                }
             }
         }
     }

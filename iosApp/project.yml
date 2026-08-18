@@ -15,10 +15,11 @@ targets:
       PRODUCT_BUNDLE_IDENTIFIER: com.aspigon1.mvdm.iosApp
       INFOPLIST_FILE: iosApp/Info.plist
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-      OTHER_LDFLAGS: $(inherited) -ObjC
-      # Force the architecture to ARM64 for all build phases
+      # EXTREMELY IMPORTANT: Lock architecture to ARM64 for both build and link
       ARCHS: arm64
       VALID_ARCHS: arm64
+      EXCLUDED_ARCHS: x86_64
+      ONLY_ACTIVE_ARCH: YES
     dependencies:
       - framework: ../shared/build/XCFrameworks/debug/Shared.xcframework
         embed: true
