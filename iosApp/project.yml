@@ -12,7 +12,6 @@ targets:
     deploymentTarget: "15.0"
     sources: 
       - path: iosApp
-      - path: iosApp/GoogleService-Info.plist
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.aspigon1.mvdm.iosApp
       INFOPLIST_FILE: iosApp/Info.plist

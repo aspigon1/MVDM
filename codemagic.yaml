@@ -2,7 +2,7 @@ workflows:
   ios-workflow:
     name: iOS Workflow
     max_build_duration: 120
-    instance_type: mac_mini_m1
+    instance_type: mac_mini_m2
     environment:
       vars:
         XCODE_PROJECT: "iosApp/iosApp.xcodeproj"
@@ -21,13 +21,13 @@ workflows:
         script: |
           cd iosApp
           xcodegen generate
-      - name: Build iOS App (Simulator for Appetize)
+      - name: Build iOS App (Universal)
         script: |
           set -o pipefail
           mkdir -p iosApp/build
-          # Resolve Swift Packages first
+          # Resolve Packages
           xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
-          # Build the app
+          # Build for arm64 (Standard for M2 Codemagic and modern Appetize)
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
@@ -38,15 +38,11 @@ workflows:
             ONLY_ACTIVE_ARCH=YES
       - name: Package for Appetize
         script: |
-          # Verify the app exists and contains Info.plist
           if [ -f "iosApp/build/iosApp.app/Info.plist" ]; then
-            echo "Info.plist found. Packaging..."
             cd iosApp/build
-            # Create a clean zip with only the .app folder
             zip -y -r ../appetize_app.zip iosApp.app
           else
-            echo "ERROR: iosApp.app/Info.plist not found in $PWD/iosApp/build"
-            ls -R iosApp/build
+            echo "Build failed to produce valid app bundle"
             exit 1
           fi
     artifacts:
