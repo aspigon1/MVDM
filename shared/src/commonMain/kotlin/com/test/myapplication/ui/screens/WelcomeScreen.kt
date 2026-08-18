@@ -29,27 +29,15 @@ import mvdm.shared.generated.resources.*
 
 @Composable
 fun WelcomeScreen(onNavigate: (Screen) -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(Res.drawable.forging_background),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-        Box(modifier = Modifier.fillMaxSize().background(
-            Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.5f), ForgeCoal))
-        ))
+    Box(modifier = Modifier.fillMaxSize().background(MvmBackground)) {
+        // Temporarily removed Image to prevent iOS resource crash
         
         Column(
             modifier = Modifier.fillMaxSize().padding(40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(Res.drawable.manne1),
-                contentDescription = "Logo",
-                modifier = Modifier.size(150.dp).padding(bottom = 20.dp)
-            )
+            // Text only for now to ensure visibility
             Text(
                 text = "MANNE VAN DIE MOOT",
                 style = MaterialTheme.typography.headlineLarge,
