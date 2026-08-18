@@ -7,7 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 
-@Database(entities = [BibleBookEntity::class, BibleChapterEntity::class, BibleVerseEntity::class], version = 2)
+@Database(
+    entities = [BibleBookEntity::class, BibleChapterEntity::class, BibleVerseEntity::class], 
+    version = 2,
+    exportSchema = false
+)
 @ConstructedBy(BibleDatabaseConstructor::class)
 abstract class BibleDatabase : RoomDatabase() {
     abstract fun bibleDao(): BibleDao

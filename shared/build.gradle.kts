@@ -26,7 +26,10 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "Shared"
-            isStatic = false
+            isStatic = true
+            // This is the magic fix: Tell the linker to ignore missing Firebase symbols 
+            // during the Gradle phase. Xcode will provide them later.
+            linkerOpts("-linker-option", "-undefined", "-linker-option", "dynamic_lookup")
         }
     }
     
