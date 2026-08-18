@@ -12,6 +12,7 @@ import com.test.myapplication.data.local.BibleDatabaseProvider
 import com.test.myapplication.data.local.getDatabaseBuilder
 import com.test.myapplication.data.repository.BibleRepository
 import com.test.myapplication.ui.App
+import com.test.myapplication.ui.theme.MyApplicationTheme
 import platform.UIKit.UIViewController
 
 fun MainViewController(): UIViewController = ComposeUIViewController {
@@ -29,11 +30,13 @@ fun MainViewController(): UIViewController = ComposeUIViewController {
         }
     }
     
-    if (isReady) {
-        App()
-    } else {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Color.White)
+    MyApplicationTheme {
+        if (isReady) {
+            App()
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = Color.White)
+            }
         }
     }
 }
