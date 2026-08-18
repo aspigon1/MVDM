@@ -3,8 +3,8 @@ import Shared
 
 struct ContentView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
-        // Kotlin 'MainViewControllerKt' becomes 'SharedMainViewControllerKt' inside the 'Shared' framework
-        return SharedMainViewControllerKt.MainViewController()
+        // Updated name to match the new Kotlin function
+        return SharedMainViewControllerKt.createComposeViewController()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}

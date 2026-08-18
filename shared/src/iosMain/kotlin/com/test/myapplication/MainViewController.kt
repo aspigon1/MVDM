@@ -17,25 +17,19 @@ import com.test.myapplication.ui.theme.MyApplicationTheme
 import com.test.myapplication.ui.theme.MvmBackground
 import platform.UIKit.UIViewController
 
-fun MainViewController(): UIViewController = ComposeUIViewController {
+// Renamed to avoid conflicts with Swift keywords
+fun createComposeViewController(): UIViewController = ComposeUIViewController {
     var isReady by remember { mutableStateOf(false) }
     
     LaunchedEffect(Unit) {
-        // Essential: Initialize repositories without hitting Firebase immediately
         try {
             val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder())
             BibleRepository.initializeDatabase(db)
-        } catch (e: Exception) {
-            println("DB Init Error: ${e.message}")
-        }
-        
-        // Give the UI a chance to render before heavy seeding
-        isReady = true
-        
-        try {
             BibleRepository.ensureSeeded()
         } catch (e: Exception) {
-            println("Seeding Error: ${e.message}")
+            println("Init Error: ${e.message}")
+        } finally {
+            isReady = true
         }
     }
     

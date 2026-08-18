@@ -22,19 +22,21 @@ workflows:
           cd iosApp
           rm -rf iosApp.xcodeproj
           xcodegen generate
-      - name: Build iOS App (ARM64)
+      - name: Build iOS App (Strict ARM64)
         script: |
           set -o pipefail
           mkdir -p iosApp/build
           xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
+          # Explicitly lock to arm64 to match our framework
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -sdk iphonesimulator \
             -configuration Debug \
             -arch arm64 \
-            CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
-            ONLY_ACTIVE_ARCH=YES
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=YES \
+            CONFIGURATION_BUILD_DIR=$PWD/iosApp/build
       - name: Package for Appetize
         script: |
           if [ -d "iosApp/build/iosApp.app" ]; then
