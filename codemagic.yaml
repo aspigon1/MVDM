@@ -12,29 +12,29 @@ workflows:
     scripts:
       - name: Set up Gradle
         script: chmod +x gradlew
-      - name: Build Shared Framework (Simulator)
+      - name: Build Shared XCFramework
         script: |
-          ./gradlew :shared:iosSimulatorArm64Binaries :shared:iosX64Binaries --no-configuration-cache
+          ./gradlew :shared:assembleSharedDebugXCFramework --no-configuration-cache
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
         script: |
           cd iosApp
+          rm -rf iosApp.xcodeproj
           xcodegen generate
-      - name: Build iOS App (Universal)
+      - name: Build iOS App (ARM64)
         script: |
           set -o pipefail
           mkdir -p iosApp/build
-          # Resolve Packages
           xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
-          # Build for simulator (arm64 + x86_64)
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -sdk iphonesimulator \
             -configuration Debug \
+            -arch arm64 \
             CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
-            ONLY_ACTIVE_ARCH=NO
+            ONLY_ACTIVE_ARCH=YES
       - name: Package for Appetize
         script: |
           if [ -d "iosApp/build/iosApp.app" ]; then
@@ -42,7 +42,6 @@ workflows:
             zip -y -r ../appetize_app.zip iosApp.app
           else
             echo "Build failed to produce valid app bundle"
-            ls -R iosApp/build
             exit 1
           fi
     artifacts:

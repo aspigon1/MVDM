@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -19,6 +20,8 @@ kotlin {
         }
     }
     
+    val xcf = XCFramework("Shared")
+    
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,8 +30,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
-            // This is the magic fix: Tell the linker to ignore missing Firebase symbols 
-            // during the Gradle phase. Xcode will provide them later.
+            xcf.add(this)
+            // Safety for missing Firebase symbols during Gradle phase
             linkerOpts("-linker-option", "-undefined", "-linker-option", "dynamic_lookup")
         }
     }
