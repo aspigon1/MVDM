@@ -5,6 +5,7 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 
 @Database(entities = [BibleBookEntity::class, BibleChapterEntity::class, BibleVerseEntity::class], version = 2)
 @ConstructedBy(BibleDatabaseConstructor::class)
@@ -32,6 +33,7 @@ fun getRoomDatabase(
     builder: RoomDatabase.Builder<BibleDatabase>
 ): BibleDatabase {
     return builder
+        .setDriver(BundledSQLiteDriver())
         .fallbackToDestructiveMigration(true)
         .build()
 }
