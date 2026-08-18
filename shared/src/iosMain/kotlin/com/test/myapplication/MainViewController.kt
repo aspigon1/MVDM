@@ -22,6 +22,8 @@ fun MainViewController(): UIViewController = ComposeUIViewController {
     
     LaunchedEffect(Unit) {
         try {
+            // Give Firebase a small window to initialize before we touch it
+            kotlinx.coroutines.delay(500)
             val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder())
             BibleRepository.initializeDatabase(db)
             BibleRepository.ensureSeeded()
