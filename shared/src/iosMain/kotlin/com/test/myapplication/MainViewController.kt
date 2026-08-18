@@ -1,5 +1,6 @@
 package com.test.myapplication
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -13,6 +14,7 @@ import com.test.myapplication.data.local.getDatabaseBuilder
 import com.test.myapplication.data.repository.BibleRepository
 import com.test.myapplication.ui.App
 import com.test.myapplication.ui.theme.MyApplicationTheme
+import com.test.myapplication.ui.theme.MvmBackground
 import platform.UIKit.UIViewController
 
 fun MainViewController(): UIViewController = ComposeUIViewController {
@@ -31,10 +33,15 @@ fun MainViewController(): UIViewController = ComposeUIViewController {
     }
     
     MyApplicationTheme {
-        if (isReady) {
-            App()
-        } else {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MvmBackground), 
+            contentAlignment = Alignment.Center
+        ) {
+            if (isReady) {
+                App()
+            } else {
                 CircularProgressIndicator(color = Color.White)
             }
         }
