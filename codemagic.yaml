@@ -22,28 +22,33 @@ workflows:
           cd iosApp
           rm -rf iosApp.xcodeproj
           xcodegen generate
-      - name: Build iOS App (Strict ARM64)
+      - name: Build iOS App (Real iPhone Unsigned)
         script: |
           set -o pipefail
           mkdir -p iosApp/build
           xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
-          # Build for ARM64 only
+          # Build for real physical iPhone without signing
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
-            -sdk iphonesimulator \
+            -sdk iphoneos \
             -configuration Debug \
             -arch arm64 \
             CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
-            ONLY_ACTIVE_ARCH=YES
-      - name: Package for Appetize
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=NO
+      - name: Package Unsigned IPA
         script: |
           if [ -d "iosApp/build/iosApp.app" ]; then
             cd iosApp/build
-            zip -y -r ../appetize_app.zip iosApp.app
+            mkdir -p Payload
+            mv iosApp.app Payload/
+            zip -r ../MVDM_Real_Device.ipa Payload
           else
             echo "Build failed to produce valid app bundle"
             exit 1
           fi
     artifacts:
-      - iosApp/appetize_app.zip
+      - iosApp/MVDM_Real_Device.ipa
