@@ -30,13 +30,15 @@ fun MvmApp() {
     var bibleLanguage by remember { mutableStateOf("AFR") } // "AFR" or "ENG"
 
     val coroutineScope = rememberCoroutineScope()
-    var isLoggedIn by remember { mutableStateOf(MvmFirebase.isLoggedIn()) }
-    var isEmailVerified by remember { mutableStateOf(MvmFirebase.isEmailVerified()) }
+    var isLoggedIn by remember { mutableStateOf(false) }
+    var isEmailVerified by remember { mutableStateOf(false) }
     var userProfile by remember { mutableStateOf<MvmUser?>(null) }
     var isAuthReady by remember { mutableStateOf(false) }
-    var isAdmin by remember { mutableStateOf(MvmFirebase.isAdmin()) }
+    var isAdmin by remember { mutableStateOf(false) }
 
-    LaunchedEffect(isLoggedIn) {
+    LaunchedEffect(Unit) {
+        // Safe check for initial login state
+        isLoggedIn = MvmFirebase.isLoggedIn()
         if (isLoggedIn) {
             userProfile = MvmFirebase.getUserProfile()
             isEmailVerified = MvmFirebase.isEmailVerified()

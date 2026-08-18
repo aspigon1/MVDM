@@ -27,22 +27,22 @@ workflows:
           mkdir -p iosApp/build
           # Resolve Packages
           xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
-          # Build for arm64 (Standard for M2 Codemagic and modern Appetize)
+          # Build for simulator (arm64 + x86_64)
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -sdk iphonesimulator \
             -configuration Debug \
-            -arch arm64 \
             CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
-            ONLY_ACTIVE_ARCH=YES
+            ONLY_ACTIVE_ARCH=NO
       - name: Package for Appetize
         script: |
-          if [ -f "iosApp/build/iosApp.app/Info.plist" ]; then
+          if [ -d "iosApp/build/iosApp.app" ]; then
             cd iosApp/build
             zip -y -r ../appetize_app.zip iosApp.app
           else
             echo "Build failed to produce valid app bundle"
+            ls -R iosApp/build
             exit 1
           fi
     artifacts:

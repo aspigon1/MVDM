@@ -21,24 +21,27 @@ fun MainViewController(): UIViewController = ComposeUIViewController {
     var isReady by remember { mutableStateOf(false) }
     
     LaunchedEffect(Unit) {
+        // Essential: Initialize repositories without hitting Firebase immediately
         try {
-            // Give Firebase a small window to initialize before we touch it
-            kotlinx.coroutines.delay(500)
             val db = BibleDatabaseProvider.getDatabase(getDatabaseBuilder())
             BibleRepository.initializeDatabase(db)
+        } catch (e: Exception) {
+            println("DB Init Error: ${e.message}")
+        }
+        
+        // Give the UI a chance to render before heavy seeding
+        isReady = true
+        
+        try {
             BibleRepository.ensureSeeded()
         } catch (e: Exception) {
-            println("Init Error: ${e.message}")
-        } finally {
-            isReady = true
+            println("Seeding Error: ${e.message}")
         }
     }
     
     MyApplicationTheme {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MvmBackground), 
+            modifier = Modifier.fillMaxSize().background(MvmBackground),
             contentAlignment = Alignment.Center
         ) {
             if (isReady) {
