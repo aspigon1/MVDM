@@ -1,10 +1,6 @@
 name: iosApp
 options:
   bundleIdPrefix: com.aspigon1.mvdm
-packages:
-  Firebase:
-    url: https://github.com/firebase/firebase-ios-sdk
-    from: 10.0.0
 targets:
   iosApp:
     type: application
@@ -12,9 +8,6 @@ targets:
     deploymentTarget: "15.0"
     sources: 
       - path: iosApp
-        excludes: ["iosApp/GoogleService-Info.plist"]
-      - path: iosApp/GoogleService-Info.plist
-        type: resource
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.aspigon1.mvdm.iosApp
       INFOPLIST_FILE: iosApp/Info.plist
@@ -22,12 +15,7 @@ targets:
       ARCHS: arm64
       VALID_ARCHS: arm64
       ONLY_ACTIVE_ARCH: YES
+      OTHER_LDFLAGS: $(inherited) -ObjC
     dependencies:
       - framework: ../shared/build/XCFrameworks/debug/Shared.xcframework
         embed: true
-      - package: Firebase
-        product: FirebaseAuth
-      - package: Firebase
-        product: FirebaseFirestore
-      - package: Firebase
-        product: FirebaseStorage
