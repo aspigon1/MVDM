@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -10,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -20,20 +20,27 @@ kotlin {
         }
     }
     
-    val xcf = XCFramework("Shared")
-    
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = "Shared module for MVDM"
+        homepage = "https://github.com/aspigon1/MVDM"
+        version = "1.0"
+        ios.deploymentTarget = "15.0"
+        podfile = project.file("../iosApp/Podfile")
+        
+        framework {
             baseName = "Shared"
             isStatic = true
-            xcf.add(this)
-            // Safety for missing Firebase symbols during Gradle phase
-            linkerOpts("-linker-option", "-undefined", "-linker-option", "dynamic_lookup")
         }
+
+        // Add the native Firebase pods so the Kotlin compiler can see them
+        pod("FirebaseCore") { version = "10.0.0" }
+        pod("FirebaseAuth") { version = "10.0.0" }
+        pod("FirebaseFirestore") { version = "10.0.0" }
+        pod("FirebaseStorage") { version = "10.0.0" }
     }
     
     sourceSets {

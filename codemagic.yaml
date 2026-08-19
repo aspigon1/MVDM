@@ -5,49 +5,54 @@ workflows:
     instance_type: mac_mini_m1
     environment:
       vars:
-        XCODE_PROJECT: "iosApp/iosApp.xcodeproj"
+        XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
         XCODE_SCHEME: "iosApp"
       node: latest
       xcode: latest
+      cocoapods: default
     scripts:
       - name: Set up Gradle
         script: chmod +x gradlew
-      - name: Build Shared XCFramework
-        script: |
-          ./gradlew :shared:assembleSharedDebugXCFramework --no-configuration-cache
+      - name: Generate Podspec
+        script: ./gradlew :shared:podspec
       - name: Install XcodeGen
         script: brew install xcodegen
       - name: Generate Xcode Project
         script: |
           cd iosApp
-          rm -rf iosApp.xcodeproj
+          rm -rf iosApp.xcodeproj iosApp.xcworkspace
           xcodegen generate
+      - name: Install Pods
+        script: |
+          cd iosApp
+          pod install
       - name: Build iOS App (Real iPhone Unsigned)
         script: |
           set -o pipefail
-          mkdir -p iosApp/build
-          xcodebuild -resolvePackageDependencies -project iosApp/iosApp.xcodeproj -scheme iosApp
-          # Build for real physical iPhone without signing
+          cd iosApp
+          # Use standard build directory to keep CocoaPods happy
           xcodebuild build \
-            -project iosApp/iosApp.xcodeproj \
+            -workspace iosApp.xcworkspace \
             -scheme iosApp \
             -sdk iphoneos \
             -configuration Debug \
             -arch arm64 \
-            CONFIGURATION_BUILD_DIR=$PWD/iosApp/build \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            ONLY_ACTIVE_ARCH=NO
+            ONLY_ACTIVE_ARCH=NO | xcpretty
       - name: Package Unsigned IPA
         script: |
-          if [ -d "iosApp/build/iosApp.app" ]; then
-            cd iosApp/build
+          # Find the built .app in standard DerivedData
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "iosApp.app" -type d | head -n 1)
+          if [ -d "$APP_PATH" ]; then
             mkdir -p Payload
-            mv iosApp.app Payload/
-            zip -r ../MVDM_Real_Device.ipa Payload
+            cp -r "$APP_PATH" Payload/
+            zip -y -r MVDM_Real_Device.ipa Payload
+            mv MVDM_Real_Device.ipa iosApp/
           else
-            echo "Build failed to produce valid app bundle"
+            echo "ERROR: iosApp.app not found"
+            find ~/Library/Developer/Xcode/DerivedData -name "*.app"
             exit 1
           fi
     artifacts:
