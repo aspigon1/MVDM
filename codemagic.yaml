@@ -59,3 +59,63 @@ workflows:
           fi
     artifacts:
       - iosApp/MVDM_Real_Device.ipa
+
+  ios-testflight-workflow:
+    name: iOS TestFlight Release
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    integrations:
+      app_store_connect: codemagic_asc_api_key
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.aspigon1.mvdm.iosApp
+      vars:
+        XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
+        XCODE_SCHEME: "iosApp"
+        APP_STORE_APPLE_ID: 6807964425
+      node: latest
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Set up Gradle
+        script: chmod +x gradlew
+      - name: Generate Podspec
+        script: ./gradlew :shared:podspec
+      - name: Generate Dummy Framework
+        script: ./gradlew :shared:generateDummyFramework
+      - name: Install XcodeGen
+        script: brew install xcodegen
+      - name: Generate Xcode Project
+        script: |
+          cd iosApp
+          rm -rf iosApp.xcodeproj iosApp.xcworkspace
+          xcodegen generate
+      - name: Install Pods
+        script: |
+          cd iosApp
+          pod install
+      - name: Set up code signing settings on Xcode project
+        script: |
+          cd iosApp
+          xcode-project use-profiles
+      - name: Increment build number
+        script: |
+          cd iosApp
+          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID")
+          agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1))
+      - name: Build ipa for distribution
+        script: |
+          cd iosApp
+          xcode-project build-ipa \
+            --workspace "iosApp.xcworkspace" \
+            --scheme "iosApp"
+    artifacts:
+      - iosApp/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - mvdm test app internal
