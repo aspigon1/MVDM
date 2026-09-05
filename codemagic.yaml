@@ -95,13 +95,12 @@ workflows:
           pod install
       - name: Use system default keychain
         script: keychain initialize
-      - name: Generate certificate signing key
-        script: openssl genrsa -out /tmp/distribution_certificate.pem 2048
+      - name: Show fetch-signing-files help
+        script: app-store-connect fetch-signing-files --help
       - name: Fetch signing files
         script: |
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
-            --certificate-key-file /tmp/distribution_certificate.pem \
             --create
       - name: Add certificates to keychain
         script: keychain add-certificates
