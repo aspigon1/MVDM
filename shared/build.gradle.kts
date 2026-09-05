@@ -37,10 +37,10 @@ kotlin {
         }
 
         // Add the native Firebase pods so the Kotlin compiler can see them
-        pod("FirebaseCore")
-        pod("FirebaseAuth")
-        pod("FirebaseFirestore")
-        pod("FirebaseStorage")
+        pod("FirebaseCore") { extraOpts += listOf("-compiler-option", "-fmodules") }
+        pod("FirebaseAuth") { extraOpts += listOf("-compiler-option", "-fmodules") }
+        pod("FirebaseFirestore") { extraOpts += listOf("-compiler-option", "-fmodules") }
+        pod("FirebaseStorage") { extraOpts += listOf("-compiler-option", "-fmodules") }
     }
     
     sourceSets {
