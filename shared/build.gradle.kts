@@ -37,10 +37,10 @@ kotlin {
         }
 
         // Add the native Firebase pods so the Kotlin compiler can see them
-        pod("FirebaseCore") { version = "10.0.0" }
-        pod("FirebaseAuth") { version = "10.0.0" }
-        pod("FirebaseFirestore") { version = "10.0.0" }
-        pod("FirebaseStorage") { version = "10.0.0" }
+        pod("FirebaseCore")
+        pod("FirebaseAuth")
+        pod("FirebaseFirestore")
+        pod("FirebaseStorage")
     }
     
     sourceSets {
