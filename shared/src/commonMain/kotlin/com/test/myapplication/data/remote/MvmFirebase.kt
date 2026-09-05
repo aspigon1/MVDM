@@ -180,12 +180,12 @@ object MvmFirebase {
         }
     }
 
-    suspend fun deleteEvent(id: String): Boolean {
+    suspend fun deleteEvent(id: String): String? {
         return try {
             db.collection(ROOSTER_COLLECTION).document(id).delete()
-            true
+            null
         } catch (e: Exception) {
-            false
+            e.message ?: "Fout by verwydering"
         }
     }
 
@@ -224,12 +224,12 @@ object MvmFirebase {
         }
     }
 
-    suspend fun deleteBusiness(id: String): Boolean {
+    suspend fun deleteBusiness(id: String): String? {
         return try {
             db.collection(BESIGHEDE_COLLECTION).document(id).delete()
-            true
+            null
         } catch (e: Exception) {
-            false
+            e.message ?: "Fout by verwydering"
         }
     }
 
@@ -256,12 +256,12 @@ object MvmFirebase {
         }
     }
 
-    suspend fun deletePrayer(id: String): Boolean {
+    suspend fun deletePrayer(id: String): String? {
         return try {
             db.collection(PRAYER_COLLECTION).document(id).delete()
-            true
+            null
         } catch (e: Exception) {
-            false
+            e.message ?: "Fout by verwydering"
         }
     }
 

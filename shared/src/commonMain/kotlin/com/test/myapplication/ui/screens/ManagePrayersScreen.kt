@@ -67,11 +67,11 @@ fun ManagePrayersScreen(onBack: () -> Unit) {
                                 Text(text = "Deur: ${prayer.author}", color = MvmGold, fontSize = 12.sp)
                                 TextButton(onClick = {
                                     coroutineScope.launch {
-                                        val success = MvmFirebase.deletePrayer(prayer.id)
-                                        if (success) {
+                                        val error = MvmFirebase.deletePrayer(prayer.id)
+                                        if (error == null) {
                                             prayers = MvmFirebase.getPrayers()
                                         } else {
-                                            showToast("Fout met verwydering")
+                                            showToast("Fout: $error")
                                         }
                                     }
                                 }) {

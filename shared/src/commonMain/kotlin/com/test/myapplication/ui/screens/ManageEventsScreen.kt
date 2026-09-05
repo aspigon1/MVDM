@@ -63,13 +63,13 @@ fun ManageEventsScreen(onBack: () -> Unit) {
             },
             onDelete = { id ->
                 coroutineScope.launch {
-                    val success = MvmFirebase.deleteEvent(id)
-                    if (success) {
+                    val error = MvmFirebase.deleteEvent(id)
+                    if (error == null) {
                         selectedEvent = null
                         refreshTrigger++
                         showToast("Geleentheid verwyder")
                     } else {
-                        showToast("Fout met verwydering")
+                        showToast("Fout: $error")
                     }
                 }
             }

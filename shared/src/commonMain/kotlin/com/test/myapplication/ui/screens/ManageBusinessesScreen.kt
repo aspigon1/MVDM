@@ -63,13 +63,13 @@ fun ManageBusinessesScreen(onBack: () -> Unit) {
             },
             onDelete = { id ->
                 coroutineScope.launch {
-                    val success = MvmFirebase.deleteBusiness(id)
-                    if (success) {
+                    val error = MvmFirebase.deleteBusiness(id)
+                    if (error == null) {
                         selectedBusiness = null
                         refreshTrigger++
                         showToast("Besigheid verwyder")
                     } else {
-                        showToast("Fout met verwydering")
+                        showToast("Fout: $error")
                     }
                 }
             }
