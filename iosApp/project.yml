@@ -8,7 +8,7 @@ targets:
     deploymentTarget: "15.0"
     sources: [iosApp]
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.aspigon1.mvdm.iosApp
+      PRODUCT_BUNDLE_IDENTIFIER: com.aspigon1.mvdm.iosApp.NKYQX69337
       INFOPLIST_FILE: iosApp/Info.plist
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       ARCHS: arm64
