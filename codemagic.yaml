@@ -69,12 +69,12 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.aspigon1.mvdm.iosApp.NKYQX69337
+        bundle_identifier: com.aspigon.mvdm
       vars:
         XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
         XCODE_SCHEME: "iosApp"
         APP_STORE_APPLE_ID: 6807964425
-        BUNDLE_ID: com.aspigon1.mvdm.iosApp.NKYQX69337
+        BUNDLE_ID: com.aspigon.mvdm
       node: latest
       xcode: latest
       cocoapods: default
