@@ -36,11 +36,16 @@ kotlin {
             isStatic = true
         }
 
-        // Add the native Firebase pods so the Kotlin compiler can see them
-        pod("FirebaseCore") { extraOpts += listOf("-compiler-option", "-fmodules") }
+        // Link the native Firebase frameworks without generating Kotlin bindings for
+        // them - shared/src never calls their native APIs directly, only through the
+        // higher-level libs.firebase.* Kotlin Multiplatform wrappers, which already
+        // ship their own compiled interop. Generating our own bindings on top of that
+        // caused duplicate-symbol collisions between pods that transitively re-export
+        // each other's types (e.g. Firestore/Auth both exposing FIRUserInfo).
+        pod("FirebaseCore") { linkOnly = true }
         pod("FirebaseAuth") { linkOnly = true }
-        pod("FirebaseFirestore") { extraOpts += listOf("-compiler-option", "-fmodules") }
-        pod("FirebaseStorage") { extraOpts += listOf("-compiler-option", "-fmodules") }
+        pod("FirebaseFirestore") { linkOnly = true }
+        pod("FirebaseStorage") { linkOnly = true }
     }
     
     sourceSets {
