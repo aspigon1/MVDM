@@ -8,7 +8,7 @@ workflows:
         XCODE_WORKSPACE: "iosApp/iosApp.xcworkspace"
         XCODE_SCHEME: "iosApp"
       node: latest
-      xcode: latest
+      xcode: 16.2
       cocoapods: default
     scripts:
       - name: Set up Gradle
@@ -73,7 +73,7 @@ workflows:
         APP_STORE_APPLE_ID: 6807964425
         BUNDLE_ID: com.aspigon.mvdm
       node: latest
-      xcode: latest
+      xcode: 16.2
       cocoapods: default
     scripts:
       - name: Set up Gradle
