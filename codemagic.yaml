@@ -95,21 +95,12 @@ workflows:
           pod install
       - name: Use system default keychain
         script: keychain initialize
-      - name: Capture signing tool help output
-        script: |
-          {
-            echo "=== fetch-signing-files --help ==="
-            app-store-connect fetch-signing-files --help
-            echo
-            echo "=== certificates --help ==="
-            app-store-connect certificates --help
-            echo
-            echo "=== certificates create --help ==="
-            app-store-connect certificates create --help
-          } > /tmp/cli_help_output.txt 2>&1 || true
+      - name: Generate certificate signing key
+        script: openssl genrsa -out /tmp/distribution_certificate.pem 2048
       - name: Fetch signing files
         script: |
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --certificate-key "@file:/tmp/distribution_certificate.pem" \
             --type IOS_APP_STORE \
             --create
       - name: Add certificates to keychain
@@ -132,7 +123,6 @@ workflows:
     artifacts:
       - iosApp/build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - /tmp/cli_help_output.txt
     publishing:
       app_store_connect:
         auth: integration
