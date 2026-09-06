@@ -129,3 +129,31 @@ workflows:
         submit_to_testflight: true
         beta_groups:
           - mvdm test app internal
+
+  android-release-workflow:
+    name: Android Play Console Release
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      android_signing:
+        - mvdm_release_keystore
+      groups:
+        - google_play
+      vars:
+        PACKAGE_NAME: "com.aspigon.mvdm"
+      java: 17
+    scripts:
+      - name: Determine next version code
+        script: |
+          LATEST_BUILD_NUMBER=$(google-play get-latest-build-number "$PACKAGE_NAME" --tracks internal alpha beta production)
+          echo "VERSION_CODE=$(($LATEST_BUILD_NUMBER + 1))" >> $CM_ENV
+      - name: Build Android release bundle
+        script: |
+          ./gradlew bundleRelease -PversionCode="$VERSION_CODE"
+    artifacts:
+      - app/build/outputs/**/*.aab
+      - app/build/outputs/**/mapping.txt
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: alpha
