@@ -8,6 +8,10 @@
 	<string>614652095239</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
+	<!-- TODO: hand-patched to stop a launch crash (BUNDLE_ID mismatch). Replace
+	     this whole file with a fresh download from Firebase Console once a
+	     proper iOS app entry exists there for com.aspigon.mvdm - Google
+	     Sign-In / push notifications may need the real registration. -->
 	<key>BUNDLE_ID</key>
 	<string>com.aspigon.mvdm</string>
 	<key>PROJECT_ID</key>
