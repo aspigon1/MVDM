@@ -11,7 +11,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.test.myapplication"
+        applicationId = "com.aspigon.mvdm"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
